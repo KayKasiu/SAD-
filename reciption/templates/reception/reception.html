@@ -1,0 +1,141 @@
+{% extends 'reception_base/base_reception.html' %}
+{% load static %}
+
+{% block title %} {{title}} {% endblock title %}
+
+
+
+{% block body %}
+<!-- Sale & Revenue Start -->
+<div class="container-fluid pt-4 px-4">
+    <div class="row g-4">
+        <div class="col-sm-6 col-xl-12">
+            <div class="bg-dark rounded d-flex align-items-center justify-content-between p-4"> 
+                <div class="">
+                    <h6 class="mb-0 text-white">
+                        Office Time: {{office_start |time:"h:i A"}} to {{office_end |time:"h:i A"}} 
+                        | Time: <span id="clock"></span> 
+                        | Weekly Off Day: {{off_day1}} 
+                        {% if off_day2  %}
+                            ,{{off_day2}}
+                        {% endif %}
+                        </h6>
+                </div>
+            </div>
+        </div>
+        
+    </div>
+</div>
+<!-- Sale & Revenue End -->
+<!-- Sale & Revenue Start -->
+<div class="container-fluid pt-4 px-4">
+    <div class="row g-4">
+        <div class="col-sm-6 col-xl-3">
+            <div class="bg-light rounded d-flex align-items-center justify-content-between p-4">
+                <i class="fa-solid fa-user fa-3x text-primary"></i>
+                <div class="ms-3">
+                    <p class="mb-2">Total Employee</p>
+                    <h6 class="mb-0"> {{total_employee}} </h6>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-xl-3">
+            <div class="bg-light rounded d-flex align-items-center justify-content-between p-4">
+                <i class="fa-solid fa-user-plus fa-3x text-primary"></i>
+                <div class="ms-3">
+                    <p class="mb-2">Present Today</p>
+                    <h6 class="mb-0"> {{attend_today}} </h6>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-xl-3">
+            <div class="bg-light rounded d-flex align-items-center justify-content-between p-4">
+                <i class="fa-solid fa-user-minus fa-3x text-primary"></i>
+                <div class="ms-3">
+                    <p class="mb-2">Absence Today</p>
+                    <h6 class="mb-0"> {{absence_today}} </h6>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-xl-3">
+            <div class="bg-light rounded d-flex align-items-center justify-content-between p-4">
+                <i class="fa fa-chart-pie fa-3x text-primary"></i>
+                <div class="ms-3">
+                    <p class="mb-2">Sort Leave</p>
+                    <h6 class="mb-0"> {{Sort_leave}} </h6>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Sale & Revenue End -->
+
+ <!-- Sales Chart Start -->
+ <div class="container-fluid pt-4 px-4">
+    <div class="row g-4">
+        <div class="col-sm-12 col-xl-6">
+            <div class="bg-light text-center rounded p-4">
+                <div class="d-flex align-items-center justify-content-between mb-4">
+                    <h6 class="mb-0">Todys Attendance Report</h6>
+                </div>
+                <div>
+                    <canvas id="myChart" width="100" height="100" ></canvas>
+                </div> 
+            </div>
+        </div>
+        <div class="col-sm-12 col-md-6 col-xl-6">
+            <div class="h-100 bg-light rounded p-4">
+                <div class="d-flex align-items-center justify-content-between mb-4">
+                    <h6 class="mb-0">Calender</h6>
+                    <a href="">Show All</a>
+                </div>
+                <div id="calender"></div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Sales Chart End -->
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+                  
+                  <script>
+                    const ctx = document.getElementById('myChart');
+                  
+                    new Chart(ctx, {
+                      type: 'pie',
+                      data: {
+                        labels: ['Present', 'Absence', 'Sort Leave','Late Present(>30 min)'],
+                        datasets: [{
+                          label: '# of Votes',
+                          data: [{{attend_today}}, {{absence_today}},{{Sort_leave}}, {{late_present}} ],
+                          borderWidth: 1
+                        }]
+                      },
+                      options: {
+                        scales: {
+                          y: {
+                            beginAtZero: true
+                          }
+                        }
+                      }
+                      
+                    });
+
+
+    function showTime() {
+        const now = new Date();
+        const hour = now.getHours();
+        const minute = now.getMinutes();
+        const second = now.getSeconds();
+        const meridiem = hour >= 12 ? 'PM' : 'AM';
+        const hour12 = hour % 12 || 12; // Convert to 12-hour format
+        const timeString = `${hour12}:${minute.toString().padStart(2, '0')}:${second.toString().padStart(2, '0')} ${meridiem}`;
+        document.getElementById('clock').textContent = timeString;
+    }
+                      
+        setInterval(showTime, 1000); // Update every second
+                          
+</script>
+    
+{% endblock body %}
+    
